@@ -1,0 +1,48 @@
+import requests
+import time
+from bs4 import BeautifulSoup
+import logging
+from robot_check import RoboCheck
+
+class CheaperScraper:
+    def __init__(self, base_url:str, user_agent: str= "CheaperBot/0.1", delay: float=2.0):
+        self.base_url = base_url.rstrip('/')
+        self.delay = delay
+        self.user_agent = user_agent
+
+        #session init
+        self.session = requests.Session()
+        self.session.headers.update({"User-Agent": self.user_agent})
+
+        # robot logic
+        self.robots = RoboCheck(base_url, user_agent)
+
+    def fetch(self, path="/"):
+        """Fetch a URL path if allowed, else skip."""
+        if not self.robots.can_fetch(path):
+            logging.warning(f"Disallowed by robots.txt: {path}")
+            return None
+
+        url = self.base_url + path
+        try:
+            response = self.session.get(url, timeout=10)
+            response.raise_for_status()
+            time.sleep(self.delay)  # polite delay
+            return response.text
+        except requests.RequestException as e:
+            logging.error(f"Error fetching {url}: {e}")
+            return None
+        
+    def parse(self, html: str):
+        soup = BeautifulSoup(html, "html.parser")
+        return [h2.get_text(strip=True) for h2 in soup.find_all("h2")]
+    
+
+    def scrape(self, paths):
+        """Fetch and parse a list of URL paths."""
+        results = {}
+        for path in paths:
+            html = self.fetch(path)
+            if html:
+                results[path] = self.parse(html)
+        return results
