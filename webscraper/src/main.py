@@ -1,4 +1,4 @@
-from CheaperScraper import CheaperScraper
+from Cheaper_Scraper import CheaperScraper
 
 def main():
     scraper = CheaperScraper("https://www.walmart.com",

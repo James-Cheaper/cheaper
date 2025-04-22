@@ -2,7 +2,7 @@ import requests
 import time
 from bs4 import BeautifulSoup
 import logging
-from robot_check import RoboCheck
+from Robot_Check import RoboCheck
 
 class CheaperScraper:
     def __init__(self, base_url:str, user_agent: str= "CheaperBot/0.1", delay: float=2.0):
@@ -17,7 +17,7 @@ class CheaperScraper:
         # robot logic checks if there are instances not able to be 
         self.robots = RoboCheck(base_url, user_agent)
 
-    def fetch(self, path="/"):
+    def fetch(self, path: str="/"):
         #Fetch a URL path if allowed
         if not self.robots.can_fetch(path):
             logging.warning(f"Disallowed by robots.txt: {path}")
