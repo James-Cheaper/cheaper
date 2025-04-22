@@ -10,24 +10,25 @@ class CheaperScraper:
         self.delay = delay
         self.user_agent = user_agent
 
-        #session init
+        #initialize session
         self.session = requests.Session()
         self.session.headers.update({"User-Agent": self.user_agent})
 
-        # robot logic
+        # robot logic checks if there are instances not able to be 
         self.robots = RoboCheck(base_url, user_agent)
 
     def fetch(self, path="/"):
-        """Fetch a URL path if allowed, else skip."""
+        #Fetch a URL path if allowed
         if not self.robots.can_fetch(path):
             logging.warning(f"Disallowed by robots.txt: {path}")
             return None
 
         url = self.base_url + path
+        
         try:
             response = self.session.get(url, timeout=10)
             response.raise_for_status()
-            time.sleep(self.delay)  # polite delay
+            time.sleep(self.delay)  # delay to simulate a user
             return response.text
         except requests.RequestException as e:
             logging.error(f"Error fetching {url}: {e}")
@@ -35,11 +36,11 @@ class CheaperScraper:
         
     def parse(self, html: str):
         soup = BeautifulSoup(html, "html.parser")
-        return [h2.get_text(strip=True) for h2 in soup.find_all("h2")]
+        return [item.get_text(strip=True) for item in soup.find_all("h2")]
     
 
     def scrape(self, paths):
-        """Fetch and parse a list of URL paths."""
+        #Fetch and parse a list of URLs
         results = {}
         for path in paths:
             html = self.fetch(path)
