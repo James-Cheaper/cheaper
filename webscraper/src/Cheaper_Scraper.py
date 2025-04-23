@@ -2,7 +2,7 @@ import requests
 import time
 from bs4 import BeautifulSoup
 import logging
-from Robot_Check import RoboCheck
+from robot_check import RoboCheck
 
 class CheaperScraper:
     def __init__(self, base_url:str, user_agent: str= "CheaperBot/0.1", delay: float=2.0):
@@ -34,9 +34,20 @@ class CheaperScraper:
             logging.error(f"Error fetching {url}: {e}")
             return None
         
+    # def parse(self, html: str):
+    #     soup = BeautifulSoup(html, "html.parser")
+    #     return [item.get_text(strip=True) for item in soup.find_all("h2")]
+
     def parse(self, html: str):
         soup = BeautifulSoup(html, "html.parser")
-        return [item.get_text(strip=True) for item in soup.find_all("h2")]
+        results = []
+    
+        for book in soup.find_all("article", class_="product_pod"):
+            title = book.h3.a["title"]
+            results.append(title)
+    
+        return results
+    
     
 
     def scrape(self, paths):
