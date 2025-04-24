@@ -2,10 +2,21 @@ import requests
 import time
 from bs4 import BeautifulSoup
 import logging
-from robot_check import RoboCheck
+from typing import Dict, List, Optional
+from ABC.base_scraper import BaseScraper
+from Robot_Check import RoboCheck
 
-class CheaperScraper:
-    def __init__(self, base_url:str, user_agent: str= "CheaperBot/0.1", delay: float=2.0):
+
+class CheaperScraper(BaseScraper):
+    def __init__(self, base_url:str, user_agent: str= "CheaperBot/0.1", delay: float=2.0) -> None:
+        """Initialize the scraper with base parameters.
+        
+        Args:
+            base_url: The base URL to scrape
+            user_agent: User agent string to identify the scraper
+            delay: Time in seconds to wait between requests
+        """
+        
         self.base_url = base_url.rstrip('/')
         self.delay = delay
         self.user_agent = user_agent
@@ -17,7 +28,15 @@ class CheaperScraper:
         # robot logic checks if there are instances not able to be 
         self.robots = RoboCheck(base_url, user_agent)
 
-    def fetch(self, path: str="/"):
+    def fetch(self, path: str = "/") -> Optional[str]:
+        """Fetch content from a specific path.
+        
+        Args:
+            path: The URL path to fetch
+            
+        Returns:
+            HTML content as string if successful, None otherwise
+        """
         #Fetch a URL path if allowed
         if not self.robots.can_fetch(path):
             logging.warning(f"Disallowed by robots.txt: {path}")
@@ -34,11 +53,15 @@ class CheaperScraper:
             logging.error(f"Error fetching {url}: {e}")
             return None
         
-    # def parse(self, html: str):
-    #     soup = BeautifulSoup(html, "html.parser")
-    #     return [item.get_text(strip=True) for item in soup.find_all("h2")]
-
-    def parse(self, html: str):
+    def parse(self, html: str) -> List[str]:
+        """Parse HTML content.
+        
+        Args:
+            html: The HTML content to parse
+            
+        Returns:
+            List of parsed items from the HTML
+        """
         soup = BeautifulSoup(html, "html.parser")
         results = []
     
@@ -50,9 +73,17 @@ class CheaperScraper:
     
     
 
-    def scrape(self, paths):
+    def scrape(self, paths: List[str]) -> Dict[str, List[str]]:
+        """Scrape multiple paths.
+        
+        Args:
+            paths: List of URL paths to scrape
+            
+        Returns:
+            Dictionary mapping paths to their parsed results
+        """
         #Fetch and parse a list of URLs
-        results = {}
+        results: Dict[str, List[str]] = {}
         for path in paths:
             html = self.fetch(path)
             if html:
