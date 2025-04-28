@@ -1,6 +1,12 @@
 
-from Cheaper_Scraper import CheaperScraper
 import json
+#import time // for testing
+# i added htese imports below becasue when i ran it it wasnt finding the folders
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from src.Cheaper_Scraper import CheaperScraper
+
 
 def main():
     # Set up the scraper for a simple legal-to-scrape website
@@ -26,3 +32,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+

@@ -11,9 +11,9 @@ Initial Landing page![Initial Landing page](https://github.com/user-attachments/
 
 -To run the scraper, execute the main.py script by running the command 
 
-python main.py
+python src/main.py
 
--Make sure you are in the src directory when you run the command  (the directory that contains main.py).
+-Make sure you are in the webscraper directory when you run the command  
 
 ##Where is the entry point?
 
