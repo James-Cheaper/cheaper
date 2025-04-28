@@ -3,12 +3,15 @@ import time
 from bs4 import BeautifulSoup
 import logging
 from typing import Dict, List, Optional
-from ABC.base_scraper import BaseScraper
-from Robot_Check import RoboCheck
+from webscraper.ABC.base_scraper import BaseScraper
+from webscraper.src.robot_check import RoboCheck
+from webscraper.api.interface import ScraperAPIInterface
 
 
-class CheaperScraper(BaseScraper):
-    def __init__(self, base_url:str, user_agent: str= "CheaperBot/0.1", delay: float=2.0) -> None:
+
+
+class CheaperScraper(BaseScraper, ScraperAPIInterface):
+    def __init__(self, base_url: str = "", user_agent: str = "CheaperBot/0.1", delay: float = 2.0) -> None:
         """Initialize the scraper with base parameters.
         
         Args:
@@ -89,3 +92,6 @@ class CheaperScraper(BaseScraper):
             if html:
                 results[path] = self.parse(html)
         return results
+    
+    def get_scraped_data(self, paths: List[str]) -> Dict[str, List[str]]:
+        return self.scrape(paths)

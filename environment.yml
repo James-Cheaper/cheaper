@@ -8,6 +8,7 @@ dependencies:
   - numpy
   - pandas
   - requests
+  - flask
   - pip:
     - beautifulsoup4
     - lxml
