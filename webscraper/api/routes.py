@@ -21,6 +21,14 @@ def scrape_books():
     results = scraper.get_scraped_data(paths)    
     return jsonify(results)
 
+@app.route('/sample-product', methods=['GET'])
+def get_sample_product():
+    sample_product = {
+        "product_name": "Sample Book",
+        "price": 19.99
+    }
+    return jsonify(sample_product)
+
 if __name__ == '__main__':
     app.run(debug=True)
 
