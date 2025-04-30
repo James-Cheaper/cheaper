@@ -6,12 +6,11 @@ def main():
 
 
 
-    EbayAPI.retrieve_ebay_response("https://api.sandbox.ebay.com/commerce/taxonomy/v1/category_tree/0",'batteries')
 
     # Set up the scraper for a simple legal-to-scrape website
-   # scraper = CheaperScraper("https://books.toscrape.com",
-    #                          user_agent="CheaperBot/0.1",
-     #                         delay=2.0)
+    scraper = CheaperScraper("https://books.toscrape.com",
+                             user_agent="CheaperBot/0.1",
+                             delay=2.0)
     # Define which pages you want to scrape (you can use "/" for homepage)
     pages = ["/"]
 
