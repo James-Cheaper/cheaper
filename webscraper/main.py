@@ -1,6 +1,4 @@
 import json
-#import time // for testing
-# i added htese imports below becasue when i ran it it wasnt finding the folders
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
