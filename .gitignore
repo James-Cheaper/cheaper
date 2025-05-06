@@ -1,3 +1,54 @@
-*.env
+# === Python build artifacts ===
 *.pyc
+*.pyo
+*.pyd
 __pycache__/
+*.log
+
+# === SQLite & output files ===
+*.sqlite3
+*.db
+output.json
+
+# === Environment variables ===
+.env
+.env.*
+*.env
+
+# === Virtual environments ===
+venv/
+.venv/
+.env/
+
+# === VSCode project settings ===
+.vscode/
+
+# === macOS system files ===
+.DS_Store
+
+# === Pytest and test cache ===
+htmlcov/
+.coverage
+.cache/
+pytest_cache/
+.tox/
+
+# === Jupyter Notebook ===
+.ipynb_checkpoints/
+
+# === Django migration artifacts (optional to ignore) ===
+# Uncomment the lines below if you want to regenerate migrations often
+# **/migrations/*.py
+# **/migrations/*.pyc
+# !**/migrations/__init__.py
+
+# === FastAPI-specific artifacts ===
+fastapi_email/email_db.sqlite3
+
+# === IDE-specific ===
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# === GitHub Codespaces or devcontainers ===
+.devcontainer/
