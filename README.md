@@ -25,3 +25,15 @@ if __name__ == "__main__":
 ##what file needs to be located and what variables would need to be changed if you wanted to scrape another website?
 
 -If you wanted to scrape another website, you need to locate the file main.py and change the variables “scraper” and “pages” to whatever website you wanted and the new URl paths. As well ensure the website allows scraping.
+
+
+
+Documentation on connecting the database to vscode with the postgres extension
+
+1. Install the PostgreSQL Extension  in VSCode
+2. Make sure PostgreSQL is Running Locally
+3. click the extension on the left sidebar
+4. click the plus button and create a new connection
+5. fill in the needed information, server = localhost, database = cheaper_local, User = postgres, port = 5432 (default), password  = the password you made when installing PostgreSQL
+7. You should be connected now and see a message and see the conencted database in the extension now.
+ 
