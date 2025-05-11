@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from accounts.views import product_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', product_list, name='product_list'),  # This sets the homepage
 ]
