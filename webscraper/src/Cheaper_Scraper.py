@@ -107,3 +107,7 @@ class CheaperScraper(BaseScraper, ScraperAPIInterface):
     
     def get_scraped_data(self, paths: List[str]) -> Dict[str, List[str]]:
         return self.scrape(paths)
+    
+    def search_item(self, query: str) -> Dict[str, str]:
+        raise NotImplementedError("search_item() is not supported by CheaperScraper.")
+
