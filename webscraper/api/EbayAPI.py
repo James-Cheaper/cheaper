@@ -2,18 +2,36 @@ import requests
 from requests.auth import HTTPBasicAuth
 from dotenv import load_dotenv
 import os
-
+from webscraper.api.interface import ScraperAPIInterface
 
 load_dotenv() #initialize
 
-class EbayAPI:
+class EbayAPI(ScraperAPIInterface):
     
       client_secret_key = os.getenv("clientsecret")
       client_id_key = os.getenv("clientid")
 
       get_user_key = HTTPBasicAuth(client_id_key, client_secret_key)
 
+      @staticmethod
+      def search_item(query: str) -> dict:
+            response_json = EbayAPI.retrieve_ebay_response(
+                  "https://api.sandbox.ebay.com/buy/browse/v1/item_summary/search",
+                  query
+            )
 
+            try:
+                  # Grab the first item from the results
+                  item = response_json["itemSummaries"][0]
+                  title = item.get("title")
+                  price = item.get("price", {}).get("value")
+                  currency = item.get("price", {}).get("currency")
+                  return {"name": title, "price": price, "currency": currency}
+            except (KeyError, IndexError):
+                  raise Exception("Could not parse item from eBay response.")
+
+
+      @staticmethod
       def retrieve_access_token():
             try:
                   response = requests.post("https://api.sandbox.ebay.com/identity/v1/oauth2/token",
@@ -32,6 +50,7 @@ class EbayAPI:
             except Exception as e:
                   raise e
 
+      @staticmethod
       def retrieve_ebay_response(httprequest:str,query:str):
             auth = EbayAPI.retrieve_access_token()
             try:
