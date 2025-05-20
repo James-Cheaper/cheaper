@@ -15,10 +15,13 @@ class EbayAPI(ScraperAPIInterface):
 
       @staticmethod
       def search_item(query: str) -> dict:
+            # print("🔗 LIVE API HIT: search_item")
             response_json = EbayAPI.retrieve_ebay_response(
                   "https://api.sandbox.ebay.com/buy/browse/v1/item_summary/search",
                   query
             )
+
+            # print("Raw response:", response_json)
 
             try:
                   # Grab the first item from the results
@@ -44,6 +47,7 @@ class EbayAPI(ScraperAPIInterface):
                                           )
                   access_token = response.json().get("access_token")
                   status_code = response.status_code
+                  # print("🎟️  Token fetched:", access_token)
                   if(status_code == 404):
                         raise Exception("404 error here")
                   return access_token
