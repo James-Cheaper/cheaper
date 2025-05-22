@@ -9,7 +9,7 @@ from webscraper.src.robot_check import RoboCheck
 from webscraper.api.interface import ScraperAPIInterface
 from webscraper.src.fetch_utils import cached_get
 from functools import lru_cache
-
+from webscraper.api.EbayAPI import EbayItem
 
 
 
@@ -108,6 +108,5 @@ class CheaperScraper(BaseScraper, ScraperAPIInterface):
     def get_scraped_data(self, paths: List[str]) -> Dict[str, List[str]]:
         return self.scrape(paths)
     
-    def search_item(self, query: str) -> Dict[str, str]:
-        raise NotImplementedError("search_item() is not supported by CheaperScraper.")
-
+def search_item(self, query: str) -> EbayItem:
+    raise NotImplementedError("search_item() is not supported by CheaperScraper.")
