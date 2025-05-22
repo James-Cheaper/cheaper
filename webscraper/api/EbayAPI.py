@@ -35,11 +35,11 @@ class EbayAPI(ScraperAPIInterface):
                   )
             
                     # Save to database
-                  session = SessionLocal()
-                  session.add(new_item)
-                  session.commit()
-                  session.refresh(new_item)
-                  session.close()
+                  if store:
+                        session = SessionLocal()
+                        session.add(new_item)
+                        session.commit()
+                        session.refresh(new_item)
 
                   return new_item
             
