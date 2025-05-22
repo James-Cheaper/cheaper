@@ -3,9 +3,18 @@ from requests.auth import HTTPBasicAuth
 from dotenv import load_dotenv
 import os
 from webscraper.api.interface import ScraperAPIInterface
-from webscraper.database.models import EbayItem
+
 
 load_dotenv() #initialize
+
+class EbayItem:
+    def __init__(self, name, price, currency, url, user_id=None):
+        self.name = name
+        self.price = price
+        self.currency = currency
+        self.url = url
+        self.user_id = user_id
+
 
 class EbayAPI(ScraperAPIInterface):
     
@@ -33,15 +42,6 @@ class EbayAPI(ScraperAPIInterface):
                         url=item.get("itemWebUrl"),
                         user_id=None  # Set this if you have user tracking
                   )
-            
-                    # Save to database
-                  if store:
-                        session = SessionLocal()
-                        session.add(new_item)
-                        session.commit()
-                        session.refresh(new_item)
-
-                  return new_item
             
             except (KeyError, IndexError):
                   raise Exception("Could not parse item from eBay response.")
