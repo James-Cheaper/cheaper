@@ -4,6 +4,8 @@ import requests
 from webscraper.api.EbayAPI import EbayAPI
 from dotenv import load_dotenv
 load_dotenv()
+from webscraper.database.db import SessionLocal
+from webscraper.database.models import EbayItem
 
 class EbayTestApi(unittest.TestCase):
 
@@ -17,13 +19,34 @@ class EbayTestApi(unittest.TestCase):
         self.assertGreater(len(token), 0)
 
     def test_search_item_real(self):
-        result = self.EbayAPI.search_item("macbook")
-        self.assertIn("name", result)
-        self.assertIn("price", result)
-        self.assertIn("currency", result)
-        self.assertIsInstance(result["name"], str)
-        self.assertTrue(result["price"])  # not None or ''
+        item = self.EbayAPI.search_item("macbook")
+        self.assertIsInstance(item.name, str)
+        self.assertIsInstance(item.price, float)
+        self.assertIsInstance(item.currency, str)
+        self.assertTrue(item.url.startswith("http"))
         
+    def test_search_item_stores_to_db(self):
+        session = SessionLocal()
+        try:
+            # Run actual API search
+            result = self.EbayAPI.search_item("macbook")
+
+            # Save result to DB
+            new_item = EbayItem(
+                name=result.name,
+                price=result.price,
+                currency=result.currency,
+                url=result.url,
+                user_id=None  # or a test user ID if needed
+            )
+            session.add(new_item)
+            session.commit()
+
+            # Query the DB to check if the item is saved
+            item = session.query(EbayItem).filter_by(name=result.name).first()
+            self.assertIsNotNone(item)
+        finally:
+            session.close()
 
     # @patch("webscraper.api.EbayAPI.requests.post")                       
     # def test_retrieve_access_token(self, mock_post):

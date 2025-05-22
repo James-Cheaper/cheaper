@@ -3,6 +3,7 @@ from requests.auth import HTTPBasicAuth
 from dotenv import load_dotenv
 import os
 from webscraper.api.interface import ScraperAPIInterface
+from webscraper.database.models import EbayItem
 
 load_dotenv() #initialize
 
@@ -14,7 +15,7 @@ class EbayAPI(ScraperAPIInterface):
       get_user_key = HTTPBasicAuth(client_id_key, client_secret_key)
 
       @staticmethod
-      def search_item(query: str) -> dict:
+      def search_item(query: str) -> EbayItem:
             # print("🔗 LIVE API HIT: search_item")
             response_json = EbayAPI.retrieve_ebay_response(
                   "https://api.sandbox.ebay.com/buy/browse/v1/item_summary/search",
@@ -24,15 +25,26 @@ class EbayAPI(ScraperAPIInterface):
             # print("Raw response:", response_json)
 
             try:
-                  # Grab the first item from the results
                   item = response_json["itemSummaries"][0]
-                  title = item.get("title")
-                  price = item.get("price", {}).get("value")
-                  currency = item.get("price", {}).get("currency")
-                  return {"name": title, "price": price, "currency": currency}
+                  return EbayItem(
+                        name=item.get("title"),
+                        price=float(item["price"]["value"]),
+                        currency=item["price"]["currency"],
+                        url=item.get("itemWebUrl"),
+                        user_id=None  # Set this if you have user tracking
+                  )
+            
+                    # Save to database
+                  session = SessionLocal()
+                  session.add(new_item)
+                  session.commit()
+                  session.refresh(new_item)
+                  session.close()
+
+                  return new_item
+            
             except (KeyError, IndexError):
                   raise Exception("Could not parse item from eBay response.")
-
 
       @staticmethod
       def retrieve_access_token():
