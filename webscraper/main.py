@@ -4,7 +4,8 @@ import json
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from src.Cheaper_Scraper import CheaperScraper
+from webscraper.src.Cheaper_Scraper import CheaperScraper
+
 
 
 def main():
@@ -16,11 +17,12 @@ def main():
     scraper = CheaperScraper("https://books.toscrape.com",
                              user_agent="CheaperBot/0.1",
                              delay=2.0)
+    
     # Define which pages you want to scrape (you can use "/" for homepage)
     pages = ["/"]
 
     # Use the scraper to fetch and parse the pages
-    results = CheaperScraper.scraper.scrape(pages)
+    results = scraper.scrape(pages)
 
     # Show the output in the terminal
     for path, items in results.items():
