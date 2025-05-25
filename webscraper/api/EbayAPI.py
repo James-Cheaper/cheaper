@@ -2,7 +2,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 from dotenv import load_dotenv
 import os
-from webscraper.api.interface import ScraperAPIInterface
+from webscraper.api.interface import EbayABC
 
 
 load_dotenv() #initialize
@@ -16,7 +16,7 @@ class EbayItem:
         self.user_id = user_id
 
 
-class EbayAPI(ScraperAPIInterface):
+class EbayAPI(EbayABC):
     
       client_secret_key = os.getenv("clientsecret")
       client_id_key = os.getenv("clientid")
@@ -87,4 +87,4 @@ class EbayAPI(ScraperAPIInterface):
                   return response.json()
             except Exception as e:
                   raise e
-
+      

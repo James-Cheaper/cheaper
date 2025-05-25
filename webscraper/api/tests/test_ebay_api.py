@@ -1,3 +1,10 @@
+import os
+import django
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "cheaper.settings")  # adjust if your settings module is different
+django.setup()
+
+
 import unittest
 from unittest.mock import patch,Mock
 import requests
@@ -24,6 +31,12 @@ class EbayTestApi(unittest.TestCase):
         self.assertIsInstance(item.currency, str)
         self.assertTrue(item.url.startswith("http"))
         
+    def test_search_item_not_found(self):
+        with self.assertRaises(Exception) as context:
+            self.EbayAPI.search_item("asdkfjasldfjalskdfj")  # nonsense query
+
+        self.assertIn("Could not parse item", str(context.exception))
+
 
     # @patch("webscraper.api.EbayAPI.requests.post")                       
     # def test_retrieve_access_token(self, mock_post):
@@ -47,10 +60,10 @@ class EbayTestApi(unittest.TestCase):
 
 
 
-    # @patch("webscraper.api.EbayAPI.requests.get")
-    # def test_retrieve_ebay_response_invalid(self,mock_get):
-    #     self.EbayAPI.retrieve_ebay_response("https://test","item")
-    #     self.assertRaises(Exception)
+    @patch("webscraper.api.EbayAPI.requests.get")
+    def test_retrieve_ebay_response_invalid(self,mock_get):
+        self.EbayAPI.retrieve_ebay_response("https://test","item")
+        self.assertRaises(Exception)
 
     # @patch("webscraper.api.EbayAPI.EbayAPI.retrieve_ebay_response")
     # def test_search_item(self, mock_response):
