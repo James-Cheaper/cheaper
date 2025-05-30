@@ -13,14 +13,12 @@ def main():
 
 
     # Set up the scraper for a simple legal-to-scrape website
-    scraper = CheaperScraper("https://books.toscrape.com",
-                             user_agent="CheaperBot/0.1",
-                             delay=2.0)
+    scraper = CheaperScraper("https://books.toscrape.com", user_agent="CheaperBot/0.1", delay=2.0)
     # Define which pages you want to scrape (you can use "/" for homepage)
     pages = ["/"]
 
     # Use the scraper to fetch and parse the pages
-    results = CheaperScraper.scraper.scrape(pages)
+    results = scraper.scrape(pages) 
 
     # Show the output in the terminal
     for path, items in results.items():
