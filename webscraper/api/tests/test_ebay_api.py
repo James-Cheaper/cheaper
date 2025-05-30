@@ -61,9 +61,14 @@ class EbayTestApi(unittest.TestCase):
 
 
     @patch("webscraper.api.EbayAPI.requests.get")
-    def test_retrieve_ebay_response_invalid(self,mock_get):
-        self.EbayAPI.retrieve_ebay_response("https://test","item")
-        self.assertRaises(Exception)
+    def test_retrieve_ebay_response_invalid(self, mock_get):
+        mock_get.side_effect = requests.exceptions.RequestException("Invalid request")
+        with self.assertRaises(Exception):
+            self.EbayAPI.retrieve_ebay_response("https://test", "item")
+
+    def test_search_item_empty_query(self):
+        with self.assertRaises(ValueError):
+            self.EbayAPI.search_item("")
 
     # @patch("webscraper.api.EbayAPI.EbayAPI.retrieve_ebay_response")
     # def test_search_item(self, mock_response):
