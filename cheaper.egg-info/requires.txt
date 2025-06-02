@@ -1,6 +1,0 @@
-beautifulsoup4
-lxml
-flask
-pandas
-numpy
-requests
