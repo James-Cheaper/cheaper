@@ -9,7 +9,7 @@ from cheaper_main.Scraper.robot_check import RoboCheck
 from ..ABC import base_scraper
 from cheaper_main.Scraper.fetch_utils import cached_get
 from functools import lru_cache
-
+from webscraper.api.EbayAPI import EbayItem
 
 
 
@@ -107,3 +107,4 @@ class CheaperScraper(BaseScraper, base_scraper):
     
     def get_scraped_data(self, paths: List[str]) -> Dict[str, List[str]]:
         return self.scrape(paths)
+    
