@@ -2,11 +2,12 @@ import requests
 from requests.auth import HTTPBasicAuth
 from dotenv import load_dotenv
 import os
+from ...ABC.RetailerApi import RetailerApi
 
 
 load_dotenv() #initialize
 
-class EbayAPI:
+class EbayAPI(RetailerApi):
     
       client_secret_key = os.getenv("clientsecret")
       client_id_key = os.getenv("clientid")
