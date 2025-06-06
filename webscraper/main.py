@@ -1,22 +1,19 @@
 import json
-#import time // for testing
-# i added htese imports below becasue when i ran it it wasnt finding the folders
+#import time  # for testing
+# i added these imports below because when i ran it it wasnt finding the folders
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from webscraper.src.Cheaper_Scraper import CheaperScraper
 
-
 def main():
-
-
-
 
     # Set up the scraper for a simple legal-to-scrape website
     scraper = CheaperScraper("https://books.toscrape.com",
                              user_agent="CheaperBot/0.1",
                              delay=2.0)
     
+    # Define which pages you want to scrape (you can use "/" for homepage)
     pages = ["/"]
 
     # Use the scraper to fetch and parse the pages
@@ -34,5 +31,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
