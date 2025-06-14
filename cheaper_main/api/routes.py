@@ -3,7 +3,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 from flask import Flask, jsonify, request
-from webscraper.src.Cheaper_Scraper import CheaperScraper
+from Scraper.Cheaper_Scraper import CheaperScraper
 
 app = Flask(__name__)
 scraper = CheaperScraper(base_url="https://books.toscrape.com")

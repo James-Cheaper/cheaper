@@ -6,15 +6,13 @@ import logging
 from typing import Dict, List, Optional
 from cheaper_main.ABC.base_scraper import BaseScraper
 from cheaper_main.Scraper.robot_check import RoboCheck
-from ..ABC import base_scraper
 from cheaper_main.Scraper.fetch_utils import cached_get
 from functools import lru_cache
-from webscraper.api.EbayAPI import EbayItem
 
 
 
 
-class CheaperScraper(BaseScraper, base_scraper):
+class CheaperScraper(BaseScraper):
     def __init__(self, base_url: str = "", user_agent: str = "CheaperBot/0.1", delay: float = 2.0) -> None:
         """Initialize the scraper with base parameters.
        
