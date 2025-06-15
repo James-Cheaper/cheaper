@@ -25,12 +25,42 @@ class EbayTestApi(unittest.TestCase):
         self.assertGreater(len(token), 0)
 
     def test_search_item_real(self):
-        item = self.EbayAPI.search_item("macbook")
-        self.assertIsInstance(item.name, str)
-        self.assertIsInstance(item.price, float)
-        self.assertIsInstance(item.currency, str)
-        self.assertTrue(item.url.startswith("http"))
-        
+        items = self.EbayAPI.search_item("macbook")
+        self.assertIsInstance(items, list)
+        self.assertGreater(len(items), 0)
+        self.assertIsInstance(items[0].name, str)
+        self.assertIsInstance(items[0].price, float)
+        self.assertIsInstance(items[0].currency, str)
+        self.assertTrue(items[0].url.startswith("http"))
+
+    @patch("webscraper.api.EbayAPI.requests.get")
+    def test_search_item_http_500(self, mock_get):
+        mock_get.return_value.status_code = 500
+        mock_get.return_value.raise_for_status.side_effect = requests.exceptions.HTTPError("Internal Server Error")
+
+        with self.assertRaises(Exception) as context:
+            self.EbayAPI.search_item("macbook")
+
+        self.assertIn("Error retrieving eBay response", str(context.exception))
+
+    @patch("webscraper.api.EbayAPI.requests.get")
+    def test_search_item_http_404(self, mock_get):
+        mock_get.return_value.status_code = 404
+        mock_get.return_value.raise_for_status.side_effect = requests.exceptions.HTTPError("Not Found")
+
+        with self.assertRaises(Exception):
+            self.EbayAPI.search_item("macbook")
+
+    @patch("webscraper.api.EbayAPI.EbayAPI.retrieve_ebay_response")
+    def test_search_item_no_items_in_response(self, mock_response):
+        mock_response.return_value = {}  # Missing 'itemSummaries'
+
+        with self.assertRaises(Exception) as context:
+            self.EbayAPI.search_item("macbook")
+
+        self.assertIn("Could not parse items", str(context.exception))
+
+            
     def test_search_item_not_found(self):
         with self.assertRaises(Exception) as context:
             self.EbayAPI.search_item("asdkfjasldfjalskdfj")  # nonsense query

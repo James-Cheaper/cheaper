@@ -15,11 +15,12 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 class EbayItem:
-    def __init__(self, name, price, currency, url, user_id=None):
+    def __init__(self, name, price, currency, url, date, user_id=None):
         self.name = name
         self.price = price
         self.currency = currency
         self.url = url
+        self.date = date
         self.user_id = user_id
 
 class EbayAPI(EbayABC):
@@ -28,30 +29,36 @@ class EbayAPI(EbayABC):
     get_user_key = HTTPBasicAuth(client_id_key, client_secret_key)
 
     @staticmethod
-    def search_item(query: str) -> EbayItem:
-        """Search for an item on eBay using the query string."""
+    def search_item(query: str) -> list[EbayItem]:
+        """Search for items on eBay and return a list of EbayItem objects."""
         if not isinstance(query, str) or not query.strip():
             logger.warning("Invalid query input.")
             raise ValueError("Query must be a non-empty string.")
-        
+
         logger.info(f"Searching eBay for: {query}")
         response_json = EbayAPI.retrieve_ebay_response(
             "https://api.sandbox.ebay.com/buy/browse/v1/item_summary/search", query
         )
 
+        results = []
         try:
-            item = response_json["itemSummaries"][0]
-            logger.debug(f"Item found: {item}")
-            return EbayItem(
-                name=item.get("title"),
-                price=float(item["price"]["value"]),
-                currency=item["price"]["currency"],
-                url=item.get("itemWebUrl"),
-                user_id=None
-            )
-        except (KeyError, IndexError) as e:
-            logger.error(f"Item not found or response invalid: {response_json}")
-            raise Exception("Could not parse item from eBay response.") from e
+            item_summaries = response_json["itemSummaries"]
+            for item in item_summaries:
+                ebay_item = EbayItem(
+                    name=item.get("title"),
+                    price=float(item["price"]["value"]),
+                    currency=item["price"]["currency"],
+                    url=item.get("itemWebUrl"),
+                    date=item.get("itemCreationDate"),
+                    user_id=None
+                )
+                results.append(ebay_item)
+            return results
+        except (KeyError, IndexError, TypeError) as e:
+            logger.error(f"Item list not found or response invalid: {response_json}")
+            raise Exception("Could not parse items from eBay response.") from e
+        finally:
+            logger.debug(f"Search attempt complete for query: {query}")
 
     @staticmethod
     def retrieve_access_token() -> str:
@@ -100,4 +107,4 @@ class EbayAPI(EbayABC):
             return response.json()
         except requests.exceptions.RequestException as e:
             logger.exception("Error retrieving eBay response.")
-            raise
+            raise Exception(f"Error retrieving eBay response: {str(e)}") from e
