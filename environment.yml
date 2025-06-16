@@ -12,3 +12,4 @@ dependencies:
   - pip:
     - beautifulsoup4
     - lxml
+    - gunicorn
