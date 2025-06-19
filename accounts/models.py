@@ -14,8 +14,7 @@ def validate_email(value):
 
 class UserAccount(models.Model):
     email = models.EmailField(max_length=50, unique=True)
-    password_hash = models.CharField(max_length=100)
-    # password_hash = models.CharField(max_length=100, default='defaultpass123')  # added default
+    password_hash = models.CharField(max_length=100, default='defaultpass123')  # added default
 
     def clean(self):
         validate_email(self.email)
@@ -28,7 +27,7 @@ class Product(models.Model):
     product_name = models.CharField(max_length=255, default='Unnamed Product')
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     url = models.TextField(default='https://example.com')
-    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE, null=True)  
+    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE, null=True)  # optional if user not yet created
 
     def __str__(self):
         return self.product_name
