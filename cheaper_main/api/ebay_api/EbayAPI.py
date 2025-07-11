@@ -3,7 +3,7 @@ from requests.auth import HTTPBasicAuth
 from dotenv import load_dotenv
 import os
 import logging
-from webscraper.api.interface import EbayABC
+from ABC.RetailerApi import RetailerApi
 
 # Load environment variables and configure logging
 load_dotenv()
@@ -22,21 +22,22 @@ class EbayItem:
         self.url = url
         self.date = date
         self.user_id = user_id
+        pass
 
-class EbayAPI(EbayABC):
-    client_secret_key = os.getenv("clientsecret")
-    client_id_key = os.getenv("clientid")
-    get_user_key = HTTPBasicAuth(client_id_key, client_secret_key)
+class EbayAPI(RetailerApi):
+    def __init__(self):
+        self.client_secret_key = os.getenv("clientsecret")
+        self.client_id_key = os.getenv("clientid")
+        self.auth = HTTPBasicAuth(self.client_id_key, self.client_secret_key)
 
-    @staticmethod
-    def search_item(query: str) -> list[EbayItem]:
-        """Search for items on eBay and return a list of EbayItem objects."""
+    def search_item(self,query: str) -> EbayItem:
+        """Search for an item on eBay using the query string."""
         if not isinstance(query, str) or not query.strip():
             logger.warning("Invalid query input.")
             raise ValueError("Query must be a non-empty string.")
 
         logger.info(f"Searching eBay for: {query}")
-        response_json = EbayAPI.retrieve_ebay_response(
+        response_json = self.retrieve_response(
             "https://api.sandbox.ebay.com/buy/browse/v1/item_summary/search", query
         )
 
@@ -60,8 +61,7 @@ class EbayAPI(EbayABC):
         finally:
             logger.debug(f"Search attempt complete for query: {query}")
 
-    @staticmethod
-    def retrieve_access_token() -> str:
+    def retrieve_access_token(self) -> str:
         """Fetch access token from eBay API."""
         logger.info("Requesting eBay access token...")
         try:
@@ -72,7 +72,7 @@ class EbayAPI(EbayABC):
                     "grant_type": "client_credentials",
                     "scope": "https://api.ebay.com/oauth/api_scope"
                 },
-                auth=EbayAPI.get_user_key
+                auth=self.auth
             )
             response.raise_for_status()
             token = response.json().get("access_token")
@@ -85,10 +85,9 @@ class EbayAPI(EbayABC):
             logger.exception("Failed to retrieve token.")
             raise
 
-    @staticmethod
-    def retrieve_ebay_response(httprequest: str, query: str) -> dict:
+    def retrieve_response(self,httprequest: str, query: str) -> dict:
         """Perform GET request to eBay API."""
-        auth = EbayAPI.retrieve_access_token()
+        auth = self.retrieve_access_token()
         logger.info(f"Making GET request to eBay API: {httprequest} with query: {query}")
         try:
             response = requests.get(

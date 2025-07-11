@@ -8,7 +8,7 @@ django.setup()
 import unittest
 from unittest.mock import patch,Mock
 import requests
-from webscraper.api.EbayAPI import EbayAPI
+from ...api.ebay_api import EbayAPI
 from dotenv import load_dotenv
 load_dotenv()
 

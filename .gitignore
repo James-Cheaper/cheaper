@@ -24,7 +24,7 @@ venv/
 .vscode/
 
 # === macOS system files ===
-.DS_Store
+*.DS_Store
 
 # === Pytest and test cache ===
 htmlcov/
