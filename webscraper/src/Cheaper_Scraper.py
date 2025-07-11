@@ -10,6 +10,12 @@ from webscraper.api.interface import ScraperAPIInterface
 from webscraper.src.fetch_utils import cached_get
 from functools import lru_cache
 from webscraper.api.EbayAPI import EbayItem
+import os
+import django
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cheaper.settings')  # adjust if needed
+django.setup()
+from accounts.models import Product
+
 
 
 
@@ -108,3 +114,6 @@ class CheaperScraper(BaseScraper, ScraperAPIInterface):
     def get_scraped_data(self, paths: List[str]) -> Dict[str, List[str]]:
         return self.scrape(paths)
     
+    def search_item(self, query: str) -> Product:
+        raise NotImplementedError("search_item not implemented yet")
+

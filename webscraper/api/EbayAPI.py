@@ -3,7 +3,7 @@ from requests.auth import HTTPBasicAuth
 from dotenv import load_dotenv
 import os
 import logging
-from webscraper.api.interface import EbayABC
+from webscraper.api.interface import ScraperAPIInterface
 
 # Load environment variables and configure logging
 load_dotenv()
@@ -23,7 +23,7 @@ class EbayItem:
         self.date = date
         self.user_id = user_id
 
-class EbayAPI(EbayABC):
+class EbayAPI(ScraperAPIInterface):
     client_secret_key = os.getenv("clientsecret")
     client_id_key = os.getenv("clientid")
     get_user_key = HTTPBasicAuth(client_id_key, client_secret_key)
@@ -86,10 +86,10 @@ class EbayAPI(EbayABC):
             raise
 
     @staticmethod
-    def retrieve_ebay_response(httprequest: str, query: str) -> dict:
+    def retrieve_ebay_response(httprequest: str, query: str, category_id: int = 0) -> dict:
         """Perform GET request to eBay API."""
         auth = EbayAPI.retrieve_access_token()
-        logger.info(f"Making GET request to eBay API: {httprequest} with query: {query}")
+        logger.info(f"Making GET request to eBay API: {httprequest} with query: {query} and category_id: {category_id}")
         try:
             response = requests.get(
                 httprequest,
@@ -97,7 +97,10 @@ class EbayAPI(EbayABC):
                     "Authorization": f"Bearer {auth}",
                     "Content-Type": "application/json"
                 },
-                params={"q": query, "category_tree_id": 0}
+                params={
+                    "q": query,
+                    "category_ids": category_id if category_id else None  # send only if nonzero
+                }
             )
             if response.status_code == 429:
                 logger.warning("Rate limit exceeded.")

@@ -3,7 +3,7 @@ from typing import Dict
 from accounts.models import Product
 
 
-class EbayABC(ABC):
+class ScraperAPIInterface(ABC):
 
     @abstractmethod
     def get_scraped_data(self, paths: list[str]) -> Product:
