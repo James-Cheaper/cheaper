@@ -15,10 +15,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from accounts.views import product_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', product_list, name='product_list'),  # This sets the homepage
+    path('o/', include('oauth2_provider.urls', namespace='oauth2_provider')),
 ]
