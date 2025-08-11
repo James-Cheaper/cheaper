@@ -10,9 +10,10 @@ class BestBuyAPI(EbayABC):
         try: 
             self.api_key = os.getenv("BESTBUY_API_KEY")
             self.base_url = "https://api.bestbuy.com/v1/products"
-        finally: 
             if not self.api_key:
                 raise Exception ("BESTBUY_API_KEY not found.")
+        except Exception as e:
+            raise Exception(f"Error initializing BestBuyAPI: {e}") from e
                 
     def retrieve_access_token(self) -> str:
         return self.api_key
