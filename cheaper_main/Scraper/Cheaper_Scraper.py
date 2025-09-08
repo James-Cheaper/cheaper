@@ -8,6 +8,10 @@ from cheaper_main.ABC.base_scraper import BaseScraper
 from cheaper_main.Scraper.robot_check import RoboCheck
 from cheaper_main.Scraper.fetch_utils import cached_get
 from functools import lru_cache
+<<<<<<< HEAD:cheaper_main/Scraper/Cheaper_Scraper.py
+=======
+
+>>>>>>> primary:webscraper/src/Cheaper_Scraper.py
 
 
 
@@ -105,4 +109,3 @@ class CheaperScraper(BaseScraper):
     
     def get_scraped_data(self, paths: List[str]) -> Dict[str, List[str]]:
         return self.scrape(paths)
-    

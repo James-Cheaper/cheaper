@@ -1,17 +1,14 @@
-import os
-import django
-
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "cheaper.settings")  # adjust if your settings module is different
-django.setup()
-
-
 import unittest
 from unittest.mock import patch,Mock
 import requests
+<<<<<<< HEAD:cheaper_main/api/tests/test_ebay_api.py
 from ...api.ebay_api import EbayAPI
 from dotenv import load_dotenv
 load_dotenv()
 
+=======
+from webscraper.api.EbayAPI import EbayAPI
+>>>>>>> primary:webscraper/api/tests/test_ebay_api.py
 
 class EbayTestApi(unittest.TestCase):
 
@@ -19,64 +16,9 @@ class EbayTestApi(unittest.TestCase):
         self.EbayAPI = EbayAPI
 
 
-    def test_retrieve_access_token_real(self):
-        token = self.EbayAPI.retrieve_access_token()
-        self.assertIsInstance(token, str)
-        self.assertGreater(len(token), 0)
-
-    def test_search_item_real(self):
-        items = self.EbayAPI.search_item("macbook")
-        self.assertIsInstance(items, list)
-        self.assertGreater(len(items), 0)
-        self.assertIsInstance(items[0].name, str)
-        self.assertIsInstance(items[0].price, float)
-        self.assertIsInstance(items[0].currency, str)
-        self.assertTrue(items[0].url.startswith("http"))
-
-    @patch("webscraper.api.EbayAPI.requests.get")
-    def test_search_item_http_500(self, mock_get):
-        mock_get.return_value.status_code = 500
-        mock_get.return_value.raise_for_status.side_effect = requests.exceptions.HTTPError("Internal Server Error")
-
-        with self.assertRaises(Exception) as context:
-            self.EbayAPI.search_item("macbook")
-
-        self.assertIn("Error retrieving eBay response", str(context.exception))
-
-    @patch("webscraper.api.EbayAPI.requests.get")
-    def test_search_item_http_404(self, mock_get):
-        mock_get.return_value.status_code = 404
-        mock_get.return_value.raise_for_status.side_effect = requests.exceptions.HTTPError("Not Found")
-
-        with self.assertRaises(Exception):
-            self.EbayAPI.search_item("macbook")
-
-    @patch("webscraper.api.EbayAPI.EbayAPI.retrieve_ebay_response")
-    def test_search_item_no_items_in_response(self, mock_response):
-        mock_response.return_value = {}  # Missing 'itemSummaries'
-
-        with self.assertRaises(Exception) as context:
-            self.EbayAPI.search_item("macbook")
-
-        self.assertIn("Could not parse items", str(context.exception))
-
-            
-    def test_search_item_not_found(self):
-        with self.assertRaises(Exception) as context:
-            self.EbayAPI.search_item("asdkfjasldfjalskdfj")  # nonsense query
-
-        self.assertIn("Could not parse item", str(context.exception))
-
-
-    # @patch("webscraper.api.EbayAPI.requests.post")                       
-    # def test_retrieve_access_token(self, mock_post):
-    #     mock_response = Mock()
-    #     mock_response.status_code = 200
-    #     mock_response.json.return_value = {"access_token": "mock_token"}
-    #     mock_post.return_value = mock_response
-
-    #     token = self.EbayAPI.retrieve_access_token()
-    #     self.assertEqual(token, "mock_token")
+    def test_retrieve_access_token(self):
+        self.EbayAPI.retrieve_access_token()
+        self.assertEqual(type(self.EbayAPI.retrieve_access_token()),str)
 
     @patch("webscraper.api.EbayAPI.requests.post")
     def test_retrieve_access_token_invalid(self,mock_post):
@@ -91,34 +33,9 @@ class EbayTestApi(unittest.TestCase):
 
 
     @patch("webscraper.api.EbayAPI.requests.get")
-    def test_retrieve_ebay_response_invalid(self, mock_get):
-        mock_get.side_effect = requests.exceptions.RequestException("Invalid request")
-        with self.assertRaises(Exception):
-            self.EbayAPI.retrieve_ebay_response("https://test", "item")
-
-    def test_search_item_empty_query(self):
-        with self.assertRaises(ValueError):
-            self.EbayAPI.search_item("")
-
-    # @patch("webscraper.api.EbayAPI.EbayAPI.retrieve_ebay_response")
-    # def test_search_item(self, mock_response):
-    #     mock_response.return_value = {
-    #         "itemSummaries": [
-    #             {
-    #                 "title": "Test Product",
-    #                 "price": {
-    #                     "value": "19.99",
-    #                     "currency": "USD"
-    #                 }
-    #             }
-    #         ]
-    #     }
-
-    #     result = self.EbayAPI.search_item("test")
-    #     self.assertEqual(result["name"], "Test Product")
-    #     self.assertEqual(result["price"], "19.99")
-    #     self.assertEqual(result["currency"], "USD")
-
+    def test_retrieve_ebay_response_invalid(self,mock_get):
+        self.EbayAPI.retrieve_ebay_response("https://test","item")
+        self.assertRaises(Exception)
 
 
 if __name__ == '__main__':

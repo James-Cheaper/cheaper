@@ -1,6 +1,3 @@
-from sqlalchemy import create_engine
-from webscraper.database.models import Base
-
 -- Create users table
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -17,7 +14,3 @@ CREATE TABLE products (
     user_id INTEGER NOT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
-
-engine = create_engine('postgresql://postgres:your_password@localhost/cheaper_local')
-Base.metadata.create_all(engine)
